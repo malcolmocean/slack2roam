@@ -187,19 +187,23 @@ function messageToBlock (message, channelname) {
     'uid': slackTimeToUid(message.ts, channelname), // because this is used as a thread-id, for some reason
     'create-time': slackTimeToMillis(message.ts),
   }
-  if (user && user.email) {
-    block['create-email'] = user.email
+  if (user) {
+    block.string = `[[${user[options.uPageNameKey]}]] `
+    if (user.email) {
+      block['create-email'] = user.email
+    }
+  } else {
+    console.log(`Warning: no user found for message "${message.text}"`)
   }
   const createTime = tsToTzAdjustedDate(block['create-time'])
   const createTime_formatted = formatTimeOfDay(createTime)
-  block.string = `[[${user[options.uPageNameKey]}]] ${createTime_formatted}`
+  block.string += `${createTime_formatted}`
   if (message.edited && message.edited.ts) {
     block['edit-time'] = slackTimeToMillis(message.edited.ts)
     const editTime = tsToTzAdjustedDate(block['edit-time'])
     const editTime_formatted = formatTimeOfDay(editTime)
     // TODO: fix date if date changed
     block.string += ` (edited ${editTime_formatted})`
-    // block["edit-email"] = usersById(message.edited.user).email
   }
   block.string += '\n' + format(message.text)
 
@@ -317,7 +321,7 @@ async function slack2roam_cli () {
   // const extra = argv._[1]
   const dirname = argv.dirname || process.cwd()
   const users = await readFileToJson(path.join(dirname, 'users.json'))
-  // console.log("users", users)
+  console.log(users.length + ' users loaded from users.json')
   makeUserMap(users)
   const channels = await readFileToJson(path.join(dirname, 'channels.json'))
   // console.log("channels", channels)
