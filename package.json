@@ -1,6 +1,6 @@
 {
   "name": "slack2roam",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Script for converting Slack export JSON into Roam import JSON",
   "main": "slack2roam.js",
   "repository": {

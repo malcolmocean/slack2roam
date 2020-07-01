@@ -89,7 +89,8 @@ function format (text) {
   string = string.replace(/ _/g, ' __').replace(/_ /g, '__ ')
 
   // <@U9JRMJ0H4> is what an at-mention looks like
-  string = string.replace(/<@([^>|]*?)>/g, (all, uid) => '@[['+usersById[uid][options.uPageNameKey]+']]')
+
+  string = string.replace(/<@([^>|]*?)>/g, (all, uid) => usersById[uid] ? '@[['+usersById[uid][options.uPageNameKey]+']]' : all)
 
   // <https://twitter.com/Malcolm_Ocean|@Malcolm_Ocean> is what a link looks like if it has text
   string = string.replace(/<(.*?)\|(.*?)>/g, '[$2]($1)')
